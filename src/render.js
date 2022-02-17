@@ -46,13 +46,26 @@ let vueApp = new Vue({
     },
   },
   methods: {
+    fireSwalError(title, text, timer = 2000){
+      Swal.fire({
+        title: title,
+        html: `<div style="display:flex;flex-direction:column;align-items:center"><span>${text}</span></div>`,
+        icon: "error",
+        showCancelButton: false,
+        confirmButtonColor: "#3085d6",
+        showConfirmButton: false,
+        allowOutsideClick: true,
+        showCloseButton: true,
+        timer: timer,
+        timerProgressBar: true,
+      });
+    },
     pauseReconnection() {
       ipcRenderer.invoke("pauseConnection");
     },
     reconnectOBS() {
       ipcRenderer.invoke("reconnect");
     },
-    saveObsSettings() {},
     resetObsSettings() {
       ipcRenderer.invoke("obsSettings");
     },
@@ -107,20 +120,11 @@ let vueApp = new Vue({
       this.status = arg;
     });
     ipcRenderer.on("obsError", (event, arg) => {
-      Swal.fire({
-        title: "OBS Error",
-        html: `<div style="display:flex;flex-direction:column;align-items:center"><span>OBS is not running. Please start OBS and try again.</span></div>`,
-        icon: "error",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        showConfirmButton: false,
-        allowOutsideClick: true,
-        showCloseButton: true,
-        timer: 2000,
-        timerProgressBar: true,
-      });
+      this.fireSwalError('Connection Error', 'OBS is unreachable. Please assure that obs is running and the connection is working properly.')
     });
-
+    ipcRenderer.on('obsAuthError', () => {
+      this.fireSwalError('OBS Auth Error', 'OBS Authentication error. Check your credentials.', 10000);
+    })
     setTimeout(() => {
       ipcRenderer.invoke("app-ready");
     }, 2500);

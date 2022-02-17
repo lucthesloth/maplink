@@ -16,96 +16,7 @@ const appconfig = new config({
     targetItem: process.env.TARGET_NAME ?? "item",
   },
 });
-
-//IPC
-ipcMain.handle("quit-app", () => {
-  app.quit();
-});
-ipcMain.handle("app-ready", () => {
-  splash.destroy();
-  mainWindow.show();
-  mainWindow.focus();
-});
-ipcMain.handle("startup", () => {
-  sendData();
-  connectToObs();
-});
-ipcMain.handle("sceneRefresh", () => {
-  refreshSceneItems().then(() => {
-    addToLog("🔄 Scene Items Refreshed");
-  }).catch(e => {
-    addToLog("⚠️ Error communicating with OBS. Please check your connection.");
-  })
-})
-ipcMain.handle("updateSceneItem", (event, item) => {
-  appconfig.set("targetItem", item);
-  addToLog(`🎬 Target Item Updated to ${item}`);
-})
-ipcMain.handle("updateConfig", (event, arg) => {
-  disconnectFromObs();
-  appconfig.set("ip", arg.ip);
-  appconfig.set("port", arg.port);
-  appconfig.set("password", arg.password);
-  addToLog(`⚙️ Config updated. Please click reconnect.`);
-});
-ipcMain.handle("obsSettings", () => {
-  mainWindow.webContents.send("obsSettings", {
-    ip: appconfig.get("ip"),
-    port: appconfig.get("port"),
-    password: appconfig.get("password"),
-  });
-});
-ipcMain.handle("pauseConnection", () => {
-  disconnectFromObs();
-  addToLog(`🔴 OBS Disconnected.`);
-  clearTimeout(reconnectTimer);
-});
-ipcMain.handle("reconnect", () => {
-  disconnectFromObs();
-  addToLog(`🟠 OBS Disconnected`);
-  connectToObs();
-});
-function sendStatus(status) {
-  mainWindow.webContents.send("status", status);
-}
-function addToLog(message) {
-  mainWindow.webContents.send("log", message);
-}
-
-function obsConnectionError() {
-  addToLog("⚠️ OBS Connection Error");
-}
-function obsDisconnected() {
-  addToLog(`🟠 OBS Disconnected, reconnecting.`);
-}
-function obsConnected() {
-  addToLog(`🟢 OBS Connected`);
-}
-function sendData() {
-  let data = {
-    password: appconfig.get("password"),
-    ip: appconfig.get("ip"),
-    port: appconfig.get("port"),
-    targetItem: appconfig.get("targetItem"),
-    removerKeys: appconfig.get("removerKeys"),
-    triggerKeys: appconfig.get("triggerKeys"),
-    obsSceneItems: [],
-  };
-  mainWindow.webContents.send("data", data);
-}
-async function refreshSceneItems(name = undefined) {
-  try {
-    name = name ?? await obs.send("GetCurrentScene");
-    const { sceneItems } = await obs.send("GetSceneItemList", {
-      sceneName: name,
-    });
-    let mappedScene = sceneItems.map(t => t.sourceName);
-    mainWindow.webContents.send("sceneRefresh", mappedScene);
-    return Promise.resolve()
-  } catch (e) {
-    return Promise.reject(e);
-  }
-}
+//ELECTRON
 let splash, mainWindow;
 function createWindow(height = 1280, width = 720) {
   splash = new BrowserWindow({
@@ -135,7 +46,6 @@ function createWindow(height = 1280, width = 720) {
   mainWindow.setMenu(null);
   splash.setMenu(null);
 }
-
 app.whenReady().then(() => {
   setTimeout(() => {
     createWindow(
@@ -144,12 +54,109 @@ app.whenReady().then(() => {
     );
   }, 10);
 });
-
 app.on("window-all-closed", function () {
   app.quit();
 });
 
+//IPC
+ipcMain.handle("quit-app", () => {
+  app.quit();
+});
+ipcMain.handle("app-ready", () => {
+  splash.destroy();
+  mainWindow.show();
+  mainWindow.focus();
+});
+ipcMain.handle("startup", () => {
+  sendData();
+  connectToObs();
+});
+//Configuration
+ipcMain.handle("updateSceneItem", (event, item) => {
+  appconfig.set("targetItem", item);
+  addToLog(`🎬 Target Item Updated to ${item}`);
+});
+ipcMain.handle("updateConfig", (event, arg) => {
+  disconnectFromObs();
+  appconfig.set("ip", arg.ip);
+  appconfig.set("port", arg.port);
+  appconfig.set("password", arg.password);
+  addToLog(`⚙️ Config updated. Please click reconnect.`);
+});
+ipcMain.handle("obsSettings", () => {
+  mainWindow.webContents.send("obsSettings", {
+    ip: appconfig.get("ip"),
+    port: appconfig.get("port"),
+    password: appconfig.get("password"),
+  });
+});
+function sendData() {
+  let data = {
+    password: appconfig.get("password"),
+    ip: appconfig.get("ip"),
+    port: appconfig.get("port"),
+    targetItem: appconfig.get("targetItem"),
+    removerKeys: appconfig.get("removerKeys"),
+    triggerKeys: appconfig.get("triggerKeys"),
+    obsSceneItems: [],
+  };
+  mainWindow.webContents.send("data", data);
+}
+//UI Updates
+function sendStatus(status) {
+  mainWindow.webContents.send("status", status);
+}
+function addToLog(message) {
+  mainWindow.webContents.send("log", message);
+}
+async function refreshSceneItems(name = undefined) {
+  try {
+    name = name ?? (await obs.send("GetCurrentScene"));
+    const { sceneItems } = await obs.send("GetSceneItemList", {
+      sceneName: name,
+    });
+    let mappedScene = sceneItems.map((t) => t.sourceName);
+    mainWindow.webContents.send("sceneRefresh", mappedScene);
+    return Promise.resolve();
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
 //OBS
+let reconnectTimer;
+let manualDisconnect = false, authenticationError = false, manualReconnect = false;
+ipcMain.handle("sceneRefresh", () => {
+  refreshSceneItems()
+    .then(() => {
+      addToLog("🔄 Scene Items Refreshed");
+    })
+    .catch((e) => {
+      addToLog(
+        "⚠️ Error communicating with OBS. Please check your connection."
+      );
+    });
+});
+ipcMain.handle("pauseConnection", () => {
+  disconnectFromObs();  
+});
+ipcMain.handle("reconnect", () => {
+  connectToObs();
+  manualReconnect = true;
+});
+function obsConnectionError() {
+  addToLog("⚠️ OBS Connection Error");
+  mainWindow.webContents.send("obsError")
+}
+function obsAuthError() {
+  addToLog("⚠️ OBS Authentication Error");
+}
+function obsDisconnected() {
+  addToLog(`🟠 OBS Disconnected, reconnecting.`);
+}
+function obsConnected() {
+  addToLog(`🟢 OBS Connected`);
+}
 function connectToObs() {
   obs
     .connect({
@@ -157,48 +164,56 @@ function connectToObs() {
       password: appconfig.get("password"),
     })
     .then(() => {})
-    .catch((e) => {
-      mainWindow.webContents.send("obsError");
-      obsConnectionError();
-    })
-    .finally(() => {
-      manualDisconnect = false;
-    });
+    .catch((e) => {      
+      if (!/authentication/i.test(e.error)) obsConnectionError();
+    })    
 }
 function disconnectFromObs() {
-  obs.disconnect();
   manualDisconnect = true;
+  obs.disconnect();
   sendStatus(0);
+  addToLog(`🔴 OBS Connection STOPPED.`);
+  clearTimeout(reconnectTimer);
 }
 
 obs.on("error", (err) => {
   obsConnectionError();
 });
-let reconnectTimer;
-let manualDisconnect = false;
-obs.on('AuthenticationSuccess', () => {
+
+obs.on("AuthenticationSuccess", () => {
   sendStatus(1);
   obsConnected();
   refreshSceneItems();
+  authenticationError = false
+  manualDisconnect = false
+  manualReconnect = false
+});
+obs.on("AuthenticationFailure", () => {
+  obsAuthError();
+  mainWindow.webContents.send("obsAuthError");
+  authenticationError = true;
+});
+obs.on('Exiting', () => {
+
 })
 obs.on("ConnectionClosed", () => {
-  mainWindow.webContents.send('sceneRefresh', [])
-  if (manualDisconnect) return;
+  mainWindow.webContents.send("sceneRefresh", []);
+  if (manualDisconnect || authenticationError || manualReconnect) return;
   sendStatus(2);
   obsDisconnected();
   reconnectTimer = setTimeout(() => {
     connectToObs();
   }, 5000);
 });
-obs.on('SwitchScenes', (data) => {
-  refreshSceneItems(data["scene-name"])
-})
-obs.on('SourceCreated', (data) => {
-  refreshSceneItems()
-})
-obs.on('SourceDestroyed', (data) => {
-  refreshSceneItems()
-})
+obs.on("SwitchScenes", (data) => {
+  refreshSceneItems(data["scene-name"]);
+});
+obs.on("SourceCreated", (data) => {
+  refreshSceneItems();
+});
+obs.on("SourceDestroyed", (data) => {
+  refreshSceneItems();
+});
 //Keys Handling
 let currentKeys = {};
 
