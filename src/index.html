@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>MapHider v2</title>
+
+  <link rel="stylesheet" href="../node_modules/@sweetalert2/theme-dark/dark.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js" type="module" defer></script>
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <script type="module" src="./render.js" defer>
+  </script>
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <div class="appBody d-flex flex-column align-center">
+          <div class="obs-wrapper">
+            <v-form class="w-100 pt-5" v-model="validObsSettings" ref="obsForm">
+              <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
+                <v-row>
+                  <span class="ml-5 mb-5 mr-auto">OBS Config</span>
+                </v-row>
+                <v-row class="d-flex flex-row align-center justify-evenly">
+                  <v-text-field v-model="ip" :append-icon="showIP ? 'mdi-eye' : 'mdi-eye-off'" persistent-hint outlined
+                    :type="showIP ? 'text' : 'password'" name="target-ip-input" :rules="[rules.required, rules.ip]"
+                    label="Target IP" hint="Local IP or Public IP of second computer" counter
+                    @click:append="showIP = !showIP">
+                  </v-text-field>
+                  <v-text-field v-model="port" :append-icon="showPort ? 'mdi-eye' : 'mdi-eye-off'" persistent-hint
+                    outlined :type="showPort ? 'text' : 'password'" name="target-port-input"
+                    :rules="[rules.required, rules.port]" label="Port" hint="Port for OBS (Default 4444)" counter
+                    @click:append="showPort = !showPort" class="ml-2 mr-2"></v-text-field>
+                  <v-text-field v-model="password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    persistent-hint outlined :type="showPassword ? 'text' : 'password'" name="target-password-input"
+                    :rules="[rules.required, rules.password]" label="Password" hint="OBS Password" counter
+                    @click:append="showPassword = !showPassword">
+                  </v-text-field>
+                </v-row>
+                <v-row class="d-flex flex-row justify-evenly align-center mb-5 mt-5">
+                  <v-btn color="error" @click="resetObsSettings">
+                    <v-icon class="mr-1">mdi-restore</v-icon> Reset
+                  </v-btn>
+                  <v-btn color="success" :disabled="!validObsSettings" @click="saveObsSettings">
+                    <v-icon class="mr-1">mdi-content-save</v-icon> Save
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </v-form>
+            <v-divider width="99%"></v-divider>
+            <div class="w-100 pt-5 pb-5">
+              <v-row>
+                <v-col cols="6">
+                  <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
+                    <v-row>
+                      <span class="ml-5 mb-5 mr-auto">OBS Controls</span>
+                    </v-row>
+                    <v-row class="d-flex flex-row justify-evenly align-center">
+                      <v-btn elevation="3" @click="pauseReconnection" color="pink darken-4">
+                        <v-icon class="mr-1">mdi-pause</v-icon>Disconnect
+                      </v-btn>
+                      <v-btn elevation="3" @click="reconnectOBS" color="indigo darken-3">
+                        <v-icon class="mr-1">mdi-reload</v-icon>Reconnect
+                      </v-btn>
+                    </v-row>
+                </v-col>
+                <v-divider vertical></v-divider>
+                <v-col cols="6">
+                  <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
+                    <v-row>
+                      <span class="ml-5 mb-5 mr-auto">OBS Item Selector</span>
+                    </v-row>
+                    <v-row class="d-flex flex-row justify-center align-center">
+                      <v-select append-outer-icon="mdi-restore" @click:append-outer="sceneRefresh" :items="obsSceneItems" label="Target Item" hint="Only available when OBS is connected" persistent-hint outlined v-model="targetItem" @change="updateTargetItem">
+                      </v-select>
+                    </v-row>
+                  </v-container>
+                </v-col>
+              </v-row>
+            </div>
+          </div>
+
+          <div class="bind-wrapper">
+
+          </div>
+
+          <div class="history-wrapper">
+            <span class="history-title">Log</span>
+            <div class="d-flex flex-column history">
+              <span v-for="(value, key, index) in logs" :key="index" class="historyItem pa-1">
+                {{ value }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </v-main>
+      <span class="footer-status">{{statusDisplay}}</span>
+      <v-footer app dark padless height="20">
+        <div class="d-flex flex-row align-center justify-center footer-container">
+          {{ new Date().getFullYear() }} — <strong> LucTheSloth</strong>
+        </div>
+      </v-footer>
+    </v-app>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+{
+  "name": "maplink-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/app.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucthesloth/maplinkv2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucthesloth/maplinkv2/issues"
+  },
+  "homepage": "https://github.com/lucthesloth/maplinkv2#readme",
+  "dependencies": {
+    "@sweetalert2/theme-dark": "0.0.1",
+    "dotenv": "^16.0.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "iohook": "^0.9.3",
+    "material-design-icons": "^3.0.1",
+    "obs-websocket-js": "^4.0.3",
+    "sweetalert2": "^11.4.0",
+    "typeface-roboto": "^1.1.13",
+    "vue": "^2.6.14",
+    "vuetify": "^2.6.3"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.63",
+    "@electron-forge/maker-deb": "^6.0.0-beta.63",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
+    "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "@types/electron": "^1.6.10",
+    "@types/vue": "^2.0.0",
+    "electron": "^12.0.0",
+    "typescript": "^4.5.5"
+  },
+  "iohook": {
+    "targets": [
+      "node-83",
+      "electron-87"
+    ],
+    "platforms": [
+      "win32",
+      "darwin",
+      "linux"
+    ],
+    "arches": [
+      "x64",
+      "ia32"
+    ]
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "maplink_v2"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}
