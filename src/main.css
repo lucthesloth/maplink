@@ -2,6 +2,10 @@ html,
 body {
   font-family: "Roboto", sans-serif;
   overflow: auto;
+  background: #3e3e3e;
+}
+.add-plus:not(:last-child)::after{
+  content:" + ";
 }
 .justify-evenly {
   justify-content: space-evenly;
@@ -14,7 +18,7 @@ body {
   margin-bottom: 5px;
   content: "";
 }
-.obs-wrapper {
+.obs-wrapper, .bind-wrapper {
     margin-top: 15px;
     margin-bottom: 5px;
     width: 95%;
@@ -28,15 +32,14 @@ body {
 .w-100 {
   width: 100%;
 }
-.history-wrapper {
-    position: absolute;
-    bottom: 10px;
+.history-wrapper {    
     overflow: visible;
-    height: 20%;
+    height: clamp(175px, 20vh, 250px);
     width: 95%;
+    margin-bottom: 15px;
 }
 .history {
-  height: 100%;
+  height: clamp(175px, 20vh, 250px);
   width: 100%;
   overflow: auto;
   background-color: rgba(255, 255, 255, 0.03);
@@ -55,7 +58,6 @@ body {
   background-color: rgba(255, 255, 255, 0.1);
 }
 .appBody {
-  max-height: 98vh;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -73,20 +75,22 @@ body {
 }
 
 *::-webkit-scrollbar {
-  width: 13px;
+  width: 13px !important;
 }
-
+.appBody::-webkit-scrollbar, body::-webkit-scrollbar, html::-webkit-scrollbar {
+  background: #121212 !important;
+}
 *::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0);
-  border-left: 1px solid rgba(0,0,0,0);
+  background: rgba(0,0,0,0) !important;
+  border-left: 1px solid rgba(0,0,0,0) !important;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #3e3e3e;
-  border: solid 3px #202020;
-  border-radius: 7px;
+  background: #3e3e3e !important;
+  border: solid 3px #20202000 !important;
+  border-radius: 7px !important;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: white;
+  background: #646464 !important;
 }

@@ -1,5 +1,5 @@
 const keyboardMap = require("./keycodes.js");
-const { ipcRenderer } = require("electron");
+const { ipcRenderer, ipcMain } = require("electron");
 import Swal from "../node_modules/sweetalert2/src/sweetalert2.js";
 // import Vue from '../node_modules/vue/dist/vue.js'
 const ipRegex =
@@ -9,6 +9,8 @@ let vueApp = new Vue({
   data() {
     return {
       select: [],
+      isTrigger: false,
+      bindDialog: false,
       keys: [],
       logs: [],
       status: 0,
@@ -23,11 +25,14 @@ let vueApp = new Vue({
       showPort: false,
       showPassword: false,
       validObsSettings: false,
+      validBinds: false,
+      lastLog: '',
       rules: {
         ip: (v) => ipRegex.test(v) || "Invalid IP",
         required: (v) => !!v || "Required.",
         port: (v) => (v > 0 && v < 65536) || "Invalid Port",
         password: (v) => v.length > 0 || "Required.",
+        keys: (v) => v.length > 0 || "Select at least one key."
       },
     };
   },
@@ -46,6 +51,15 @@ let vueApp = new Vue({
     },
   },
   methods: {
+    openBindDialog(val = false){
+      console.log(val)
+      this.select = []
+      this.isTrigger = val
+      this.bindDialog = true
+    },
+    getDisplay(k = 0){
+      return keyboardMap[k]
+    },
     fireSwalError(title, text, timer = 2000){
       Swal.fire({
         title: title,
@@ -83,7 +97,21 @@ let vueApp = new Vue({
     },
     sceneRefresh(){
       ipcRenderer.invoke("sceneRefresh");
-    }
+    },
+    removeRemoverKey(value){
+      ipcRenderer.invoke("removeRemoverKeys", value);
+    },
+    removeTriggerKey(value){
+      ipcRenderer.invoke("removeTriggerKeys", value);
+    },
+    addKey(){
+      if (this.$refs.bindForm.validate()) {
+        console.log(this.select)
+        this.bindDialog = false;
+        if (this.isTrigger) ipcRenderer.invoke("addTriggerKeys", this.select);
+        else ipcRenderer.invoke("addRemoverKeys", this.select);
+      }
+    },
   },
   watch: {},
   mounted() {
@@ -91,6 +119,8 @@ let vueApp = new Vue({
       this.keys.push({ value: kIt, text: keyboardMap[kIt] });
     }
     ipcRenderer.on("log", (event, arg) => {
+      if (this.lastLog.normalize() == arg.normalize()) return;
+      this.lastLog = arg;
       this.logs.unshift(
         `> ${new Date().toLocaleTimeString().split(` `)[0]} - ${arg}`
       );
@@ -130,6 +160,7 @@ let vueApp = new Vue({
     }, 2500);
 
     ipcRenderer.on("data", (event, arg) => {
+      console.log(arg)
       this.ip = arg.ip;
       this.password = arg.password;
       this.port = arg.port;
@@ -138,6 +169,10 @@ let vueApp = new Vue({
       this.targetItem = arg.targetItem;
       this.obsSceneItems = arg.obsSceneItems;
     });
+    ipcRenderer.on('refreshBinds', (event, arg) => {
+      this.triggerKeys = arg.triggerKeys;
+      this.removerKeys = arg.removerKeys;
+    })
     ipcRenderer.on("sceneRefresh", (event, arg) => {
       this.obsSceneItems = arg;
       if (!this.obsSceneItems.includes(this.targetItem))
@@ -147,7 +182,7 @@ let vueApp = new Vue({
       this.ip = arg.ip;
       this.password = arg.password;
       this.port = arg.port;
-    });
+    });    
   },
   vuetify: new Vuetify({
     theme: { dark: true },
