@@ -4,8 +4,9 @@ body {
   overflow: auto;
   background: #3e3e3e;
 }
-.add-plus:not(:last-child)::after{
-  content:" + ";
+.add-plus:not(:first-child)::before{
+  content:"+";
+  margin: 0 3px 0 3px;
 }
 .justify-evenly {
   justify-content: space-evenly;

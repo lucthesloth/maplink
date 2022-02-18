@@ -106,7 +106,7 @@ let vueApp = new Vue({
     },
     addKey(){
       if (this.$refs.bindForm.validate()) {
-        console.log(this.select)
+
         this.bindDialog = false;
         if (this.isTrigger) ipcRenderer.invoke("addTriggerKeys", this.select);
         else ipcRenderer.invoke("addRemoverKeys", this.select);
@@ -160,7 +160,7 @@ let vueApp = new Vue({
     }, 2500);
 
     ipcRenderer.on("data", (event, arg) => {
-      console.log(arg)
+
       this.ip = arg.ip;
       this.password = arg.password;
       this.port = arg.port;

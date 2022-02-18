@@ -4,6 +4,7 @@ const OBSWebSocket = require("obs-websocket-js");
 const obs = new OBSWebSocket();
 const _ = require("lodash");
 let keyCodes = require("./keycodes.js");
+const trelloLink = "https://trello.com/b/CTgN1mf5/maphider-v2"
 let config = require("./config.js");
 require("dotenv").config();
 const appconfig = new config({
@@ -145,6 +146,7 @@ function sendData() {
     obsSceneItems: [],
   };
   mainWindow.webContents.send("data", data);
+  addToLog(`📡 You are currently running MapHiderV2 v${app.getVersion()} - ${trelloLink}`);
 }
 //UI Updates
 function sendStatus(status) {
@@ -153,6 +155,7 @@ function sendStatus(status) {
 function addToLog(message) {
   mainWindow.webContents.send("log", message);
 }
+let gSceneList = [];
 async function refreshSceneItems(name = undefined) {
   try {
     name = name ?? (await obs.send("GetCurrentScene"));
@@ -161,6 +164,7 @@ async function refreshSceneItems(name = undefined) {
     });
     let mappedScene = sceneItems.map((t) => t.sourceName);
     mainWindow.webContents.send("sceneRefresh", mappedScene);
+    gSceneList = mappedScene;
     return Promise.resolve();
   } catch (e) {
     return Promise.reject(e);
@@ -168,6 +172,8 @@ async function refreshSceneItems(name = undefined) {
 }
 
 //OBS
+let failedConnections = 0;
+let maxFailedConnetions = 5;
 let reconnectTimer;
 let manualDisconnect = false,
   authenticationError = false,
@@ -198,7 +204,7 @@ function obsAuthError() {
   addToLog("⚠️ OBS Authentication Error");
 }
 function obsDisconnected() {
-  addToLog(`🟠 OBS Disconnected, reconnecting.`);
+  addToLog(`🟠 OBS Disconnected, reconnecting. ${failedConnections}/${maxFailedConnetions}`);
 }
 function obsConnected() {
   addToLog(`🟢 OBS Connected`);
@@ -235,6 +241,7 @@ obs.on("AuthenticationSuccess", () => {
   authenticationError = false;
   manualDisconnect = false;
   manualReconnect = false;
+  failedConnections = 0;
 });
 obs.on("AuthenticationFailure", () => {
   obsAuthError();
@@ -249,6 +256,13 @@ obs.on("ConnectionClosed", () => {
   sendStatus(2);
   obsDisconnected();
   reconnectTimer = setTimeout(() => {
+    failedConnections++;
+    if (failedConnections >= maxFailedConnetions) {
+      addToLog(`⚠️ Connection failured reached max. Please check your credentials and make sure obs is running!`);
+      obsConnectionError()
+      sendStatus(0)
+      return;
+    }
     connectToObs();
   }, 5000);
 });
@@ -274,6 +288,7 @@ ioHook.on('keyup', (event) => {
 })
 
 let detectKeybindState = _.debounce(async function ({keycode, type}){
+  if (!gSceneList.includes(appconfig.get("targetItem"))) return
   if (type == "keydown") {
     currentKeys[keycode] = true;
   } else if (type == "keyup") {
@@ -292,7 +307,7 @@ let detectKeybindState = _.debounce(async function ({keycode, type}){
     })
   } else if (checkRemover()){
     let currentTime = Date.now();
-    if (lastInstance == 1 && currentTime - lastTime < 50 || lastInstance == 0 && currentTime - lastTime < 125) return
+    if (lastInstance == 1 && currentTime - lastTime < 50 || lastInstance == 0 && currentTime - lastTime < 100) return
     obs.send('SetSceneItemRender', {render: false, source: appconfig.get("targetItem")}).then(() => {
       addToLog(`Hidden "${appconfig.get("targetItem")}"`);
       lastTime = Date.now()
@@ -340,7 +355,7 @@ const ArrayEquals = (a, b) =>
 function keyArrayToString(keyArray) {
   let string = "";
   for (let i = 0; i < keyArray.length; i++) {
-    string += keyArray[i];
+    string += keyCodes[keyArray[i]];
     if (i < keyArray.length - 1) string += ' + '
   }
   return string;

@@ -80,7 +80,7 @@
             <v-divider width="99%"></v-divider>
             <div class="w-100 pt-5 pb-5">
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
                     <v-row>
                       <span class="ml-5 mb-5 mr-auto">OBS Controls</span>
@@ -95,7 +95,7 @@
                     </v-row>
                 </v-col>
                 <v-divider vertical></v-divider>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
                     <v-row>
                       <span class="ml-5 mb-5 mr-auto">OBS Item Selector</span>
@@ -115,7 +115,7 @@
           <div class="bind-wrapper">
             <div class="w-100 pt-5 pb-5">
               <v-row>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
                     <v-row>
                       <span class="ml-5 mb-5 mr-auto">Remover Binds</span>
@@ -124,15 +124,15 @@
                       </v-btn>
                     </v-row>
                     <v-row>
-                      <v-chip v-for="(value, key, index) in removerKeys" :key="index" class="ma-2"
+                      <v-chip label v-for="(value, key, index) in removerKeys" :key="index" class="ma-2"
                         @click="removeRemoverKey(value)">
-                        <span class="add-plus" v-for="(svalue, skey, sindex) in value">{{getDisplay(svalue)}}</span>
+                        <span class="add-plus" v-for="(svalue, skey, sindex) in value">{{getDisplay(svalue)}}</span><v-icon class="ml-1">mdi-delete</v-icon>
                       </v-chip>
                     </v-row>
                   </v-container>
                 </v-col>
                 <v-divider vertical></v-divider>
-                <v-col cols="6">
+                <v-col cols="12" md="6">
                   <v-container fluid class="ml-5 mr-5" style="width: auto !important;">
                     <v-row>
                       <span class="ml-5 mb-5 mr-auto">Trigger Binds</span>
@@ -141,9 +141,9 @@
                       </v-btn>
                     </v-row>
                     <v-row>
-                      <v-chip v-for="(value, key, index) in triggerKeys" :key="index" class="ma-2"
+                      <v-chip label v-for="(value, key, index) in triggerKeys" :key="index" class="ma-2"
                         @click="removeTriggerKey(value)">
-                        <span class="add-plus" v-for="(svalue, skey, sindex) in value">{{getDisplay(svalue)}}</span>
+                        <span class="add-plus" v-for="(svalue, skey, sindex) in value">{{getDisplay(svalue)}}</span><v-icon class="ml-1">mdi-delete</v-icon>
                       </v-chip>
                     </v-row>
                   </v-container>
