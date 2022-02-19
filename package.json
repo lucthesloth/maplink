@@ -39,6 +39,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "@electron-forge/plugin-auto-unpack-natives": "^6.0.0-beta.63",
+    "@electron-forge/publisher-github": "^6.0.0-beta.63",
     "@types/electron": "^1.6.10",
     "@types/vue": "^2.0.0",
     "electron": "^12.0.0",
@@ -60,43 +61,6 @@
     ]
   },
   "config": {
-    "forge": {
-      "packagerConfig": {
-        "asar": false,
-        "appVersion": "1.0.1",
-        "appCopyright": "Copyright © 2022 Lucas C"
-      },
-      "electronWinstallerConfig": {
-        "name": "MapHiderV2"
-      },
-      "github_repository": {
-        "owner": "lucthesloth",
-        "name": "maplinkv2"
-      },
-      "plugins": [],
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "maplink_v2",
-            "certificateFile": "./my_signing_key.pfx"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
+    "forge": "./forge.config.js"
   }
 }
