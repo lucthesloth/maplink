@@ -1,7 +1,7 @@
 {
-  "name": "maplink-v2",
-  "productName": "MapHiderV2",
-  "version": "1.0.2",
+  "name": "maplink",
+  "productName": "MapLink",
+  "version": "1.0.3",
   "description": "Shows and hides a select item in the OBS source list.",
   "main": "./src/app.js",
   "scripts": {
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lucthesloth/maplinkv2.git"
+    "url": "git+https://github.com/lucthesloth/maplink.git"
   },
   "keywords": [],
   "author": "Lucas C",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lucthesloth/maplinkv2/issues"
+    "url": "https://github.com/lucthesloth/maplink/issues"
   },
-  "homepage": "https://github.com/lucthesloth/maplinkv2#readme",
+  "homepage": "https://github.com/lucthesloth/maplink#readme",
   "dependencies": {
     "@sweetalert2/theme-dark": "0.0.1",
     "dotenv": "^16.0.0",

@@ -102,8 +102,15 @@ body {
   right: 3px;
   z-index: 4;
   text-decoration: none;
+  font-size: 13px;
+  color: #FFF !important;
 }
 .kofiimg {
-  height: 18px;
+  height: 13px;
   width: auto;
+}
+.kofitext {
+  color: #FFF !important;
+  font-weight: bold;
+  text-decoration: none;
 }
