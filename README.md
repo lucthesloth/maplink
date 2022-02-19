@@ -1,6 +1,5 @@
 # MapLink ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lucthesloth/maplinkv2/latest/total)
 
-
 Made with [iRiskPvP's](https://twitch.tv/iriskpvp) specification in mind
 ### YES I KNOW IT
 If you read through the code and see that I put in vuetify/vue/materialdesignicons through cdns instead of locally installing the packages and referencing them **I know it is like that and yes I will change it later on**.<br> I was way too burned out when writing the last parts of it that I couldn't bring myself to fix my issues with **Vuetify** by using it locally.
