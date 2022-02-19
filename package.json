@@ -1,19 +1,21 @@
 {
   "name": "maplink-v2",
-  "version": "1.0.0",
-  "description": "",
+  "productName": "MapHiderV2",
+  "version": "1.0.1",
+  "description": "Shows and hides a select item in the OBS source list.",
   "main": "./src/app.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lucthesloth/maplinkv2.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lucas C",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lucthesloth/maplinkv2/issues"
@@ -22,11 +24,13 @@
   "dependencies": {
     "@sweetalert2/theme-dark": "0.0.1",
     "dotenv": "^16.0.0",
+    "electron-log": "^4.4.6",
     "electron-squirrel-startup": "^1.0.0",
     "iohook": "^0.9.3",
     "lodash": "^4.17.21",
     "obs-websocket-js": "^4.0.3",
-    "sweetalert2": "^11.4.0"
+    "sweetalert2": "^11.4.0",
+    "update-electron-app": "^2.0.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.63",
@@ -34,6 +38,7 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.0.0-beta.63",
     "@types/electron": "^1.6.10",
     "@types/vue": "^2.0.0",
     "electron": "^12.0.0",
@@ -56,12 +61,25 @@
   },
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "asar": false,
+        "appVersion": "1.0.1",
+        "appCopyright": "Copyright © 2022 Lucas C"
+      },
+      "electronWinstallerConfig": {
+        "name": "MapHiderV2"
+      },
+      "github_repository": {
+        "owner": "lucthesloth",
+        "name": "maplinkv2"
+      },
+      "plugins": [],
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "maplink_v2"
+            "name": "maplink_v2",
+            "certificateFile": "./my_signing_key.pfx"
           }
         },
         {

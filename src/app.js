@@ -1,3 +1,4 @@
+const squirrel = require("./squirrel.js")
 const { app, BrowserWindow, screen, ipcMain } = require("electron");
 const ioHook = require("iohook");
 const OBSWebSocket = require("obs-websocket-js");
@@ -51,6 +52,7 @@ function createWindow(height = 1280, width = 720) {
   splash.setMenu(null);
 }
 app.whenReady().then(() => {
+  squirrel()
   ioHook.removeAllListeners('mousemove')
   setTimeout(() => {
     createWindow(
