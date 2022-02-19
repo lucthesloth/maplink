@@ -18,7 +18,9 @@ const appconfig = new config({
     removerKeys: [[42, 17]],
     targetItem: process.env.TARGET_NAME ?? "item",
     width:1000,
-    height:800
+    height:800,
+    acceptedTerms: false,
+    firstOpen: true,
   },
 });
 //ELECTRON
@@ -71,10 +73,12 @@ ipcMain.handle("quit-app", () => {
 });
 ipcMain.handle("app-ready", () => {
   splash.destroy();
+  mainWindow.webContents.send('agreement', appconfig.get('acceptedTerms', false))
   mainWindow.show();
   mainWindow.focus();
 });
 ipcMain.handle("startup", () => {
+  appconfig.set('acceptedTerms', true)
   sendData();
   connectToObs();
 });
@@ -175,7 +179,7 @@ async function refreshSceneItems(name = undefined) {
 
 //OBS
 let failedConnections = 0;
-let maxFailedConnetions = 5;
+let maxFailedConnetions = 3;
 let reconnectTimer;
 let manualDisconnect = false,
   authenticationError = false,
@@ -196,6 +200,7 @@ ipcMain.handle("pauseConnection", () => {
 });
 ipcMain.handle("reconnect", () => {
   manualReconnect = true;
+  appconfig.set('firstOpen', false)
   connectToObs();
 });
 function obsConnectionError() {
@@ -212,6 +217,7 @@ function obsConnected() {
   addToLog(`🟢 OBS Connected`);
 }
 function connectToObs() {
+  if (appconfig.get('firstOpen', true)) return;
   addToLog(`🟡 Connecting to OBS`);
   obs
     .connect({

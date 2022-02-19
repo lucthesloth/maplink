@@ -10,8 +10,8 @@ class Store {
     this.data = parseDataFile(this.path, opts.defaults);
   }
   
-  get(key) {
-    return this.data[key];
+  get(key, dft = undefined) {
+    return this.data[key] !== undefined ? this.data[key] : dft;
   }
   
   set(key, val) {

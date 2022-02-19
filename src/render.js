@@ -51,6 +51,11 @@ let vueApp = new Vue({
     },
   },
   methods: {
+    openKofiLink(){
+      const link = "https://ko-fi.com/B0B4ANQGE"
+      const { shell } = require('electron')
+      shell.openExternal(link)
+    },
     openBindDialog(val = false){
       console.log(val)
       this.select = []
@@ -126,26 +131,32 @@ let vueApp = new Vue({
       );
       if (this.logs.length > 50) this.logs.pop();
     });
-    Swal.fire({
-      title: "MapHider Agreement",
-      html: `<div style="display:flex;flex-direction:column;align-items:center"><span>By using this software you agree to the following:</span>
-      <span>1. You will not redistribute this software.</span>
-      <span>2. You agree that for all intents and purpose the input of your keyboard will be captured even when the application is not active.</span></div>`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "I Agree",
-      allowOutsideClick: false,
-      showCloseButton: false,
-      allowEscapeKey: false,
-    }).then((result) => {
-      if (!result.isConfirmed) {
-        ipcRenderer.invoke("quit-app");
-      } else {
+    ipcRenderer.on('agreement', (event, arg) => {
+      if (arg) {
         ipcRenderer.invoke("startup");
+      } else {
+        Swal.fire({
+          title: "MapHider Agreement",
+          html: `<div style="display:flex;flex-direction:column;align-items:center"><span>By using this software you agree to the following:</span>
+          <span>1. You will not redistribute this software.</span>
+          <span>2. You agree that for all intents and purpose the input of your keyboard will be captured even when the application is not active.</span></div>`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "I Agree",
+          allowOutsideClick: false,
+          showCloseButton: false,
+          allowEscapeKey: false,
+        }).then((result) => {
+          if (!result.isConfirmed) {
+            ipcRenderer.invoke("quit-app");
+          } else {
+            ipcRenderer.invoke("startup");
+          }
+        });
       }
-    });
+    })
     ipcRenderer.on("status", (event, arg) => {
       this.status = arg;
     });

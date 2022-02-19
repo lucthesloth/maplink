@@ -95,3 +95,15 @@ body {
 *::-webkit-scrollbar-thumb:hover {
   background: #646464 !important;
 }
+
+.footer-coffee {
+  position: fixed;
+  bottom: 0;
+  right: 3px;
+  z-index: 4;
+  text-decoration: none;
+}
+.kofiimg {
+  height: 18px;
+  width: auto;
+}
