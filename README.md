@@ -1,4 +1,4 @@
-# MapHider v2 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lucthesloth/maplinkv2/latest/total)
+# MapLink ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lucthesloth/maplinkv2/latest/total)
 <br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B4ANQGE)
 
 Made with [iRiskPvP's](https://twitch.tv/iriskpvp) specification in mind
