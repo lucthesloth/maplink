@@ -7,7 +7,7 @@ If you read through the code and see that I put in vuetify/vue/materialdesignico
 
 Available through the [releases tab](https://github.com/lucthesloth/maplinkv2/releases)
 
-#####Cert
+##### Cert
 You will most likely get some warnings when trying to install/run the app. This happens since I used a self-signed certificate for this app since I do not have enough money to get one from comodo or digicert (those things are expensive).
 <br>If I get one later on it will be used but for now this is how it will be.
 
