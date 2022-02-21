@@ -4,6 +4,7 @@
 
 ### YES I KNOW IT
 If you read through the code and see that I put in vuetify/vue/materialdesignicons through cdns instead of locally installing the packages and referencing them **I know it is like that and yes I will change it later on**.<br> I was way too burned out when writing the last parts of it that I couldn't bring myself to fix my issues with **Vuetify** by using it locally.
+<br><img src="https://cdn.ko-fi.com/cdn/useruploads/png_76833faf-9dbc-432d-a2c0-5be567ceedbd.png" height="250px" width="auto" />
 ## Installation
 
 Available through the [releases tab](https://github.com/lucthesloth/maplinkv2/releases)
