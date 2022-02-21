@@ -27,6 +27,7 @@ let vueApp = new Vue({
       validObsSettings: false,
       validBinds: false,
       lastLog: '',
+      actionCooldown: 0,
       rules: {
         ip: (v) => ipRegex.test(v) || "Invalid IP",
         required: (v) => !!v || "Required.",
@@ -51,6 +52,10 @@ let vueApp = new Vue({
     },
   },
   methods: {
+    changeActionCooldown () {
+      console.log(this.actionCooldown)
+      ipcRenderer.invoke('actionCooldown', this.actionCooldown)
+    },
     openKofiLink(){
       const link = "https://ko-fi.com/B0B4ANQGE"
       const { shell } = require('electron')
@@ -118,7 +123,9 @@ let vueApp = new Vue({
       }
     },
   },
-  watch: {},
+  watch: {
+    
+  },
   mounted() {
     for (const kIt in keyboardMap) {
       this.keys.push({ value: kIt, text: keyboardMap[kIt] });
@@ -179,6 +186,7 @@ let vueApp = new Vue({
       this.removerKeys = arg.removerKeys;
       this.targetItem = arg.targetItem;
       this.obsSceneItems = arg.obsSceneItems;
+      this.actionCooldown = arg.actionCooldown;
     });
     ipcRenderer.on('refreshBinds', (event, arg) => {
       this.triggerKeys = arg.triggerKeys;

@@ -115,6 +115,21 @@
                 </v-col>
               </v-row>
             </div>
+            <v-divider width="99%"></v-divider>
+            <div class="w-100 pt-5 pb-5">
+              <v-row>
+                <span class="ml-5 mb-5 mr-auto">MapHider Options</span>
+              </v-row>
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-slider label="Cooldown" hint="Cooldown between actions" max="250" min="25" @change="changeActionCooldown" thumb-label persistent-hint v-model="actionCooldown"></v-slider>
+                </v-col>
+                <v-divider vertical></v-divider>
+                <v-col cols="12" md="6">
+
+                </v-col>
+              </v-row>
+            </div>
           </div>
 
           <div class="bind-wrapper">
@@ -177,12 +192,11 @@
         </div>
       </v-footer>
       <span class="footer-coffee">
-        <a title="Support me on ko-fi.com" class="kofi-button"
-            @click="openKofiLink" target="_blank"> 
-            <span class="kofitext">
-              Support Me on
-              Ko-fi <img
-              src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofiimg"></span></a>
+        <a title="Support me on ko-fi.com" class="kofi-button" @click="openKofiLink" target="_blank">
+          <span class="kofitext">
+            Support Me on
+            Ko-fi <img src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations"
+              class="kofiimg"></span></a>
       </span>
     </v-app>
   </div>

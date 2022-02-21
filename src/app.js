@@ -21,6 +21,7 @@ const appconfig = new config({
     height:800,
     acceptedTerms: false,
     firstOpen: true,
+    actionCooldown: 50,
   },
 });
 //ELECTRON
@@ -48,7 +49,7 @@ function createWindow(height = 1280, width = 720) {
     icon: "map_icon_rust.png",
   });
   mainWindow.loadFile("./src/index.html");
-  // mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
   mainWindow.on('resized', storeWindowSize)
   mainWindow.setMenu(null);
   splash.setMenu(null);
@@ -83,6 +84,10 @@ ipcMain.handle("startup", () => {
   connectToObs();
 });
 //Configuration
+ipcMain.handle("actionCooldown", (event, arg) => {
+  appconfig.set("actionCooldown", arg);
+  addToLog(`🔄 Action Cooldown set to ${arg}ms`);
+})
 ipcMain.handle("updateSceneItem", (event, item) => {
   appconfig.set("targetItem", item);
   addToLog(`🎬 Target Item Updated to ${item}`);
@@ -150,6 +155,7 @@ function sendData() {
     removerKeys: appconfig.get("removerKeys"),
     triggerKeys: appconfig.get("triggerKeys"),
     obsSceneItems: [],
+    actionCooldown: appconfig.get("actionCooldown", 50),
   };
   mainWindow.webContents.send("data", data);
   addToLog(`📡 You are currently running MapHiderV2 v${app.getVersion()} - ${trelloLink}`);
@@ -303,9 +309,13 @@ let detectKeybindState = _.debounce(async function ({keycode, type}){
     delete currentKeys[keycode];
   }
 
+  doLoop();  
+})
+
+function doLoop(){
   if (checkTrigger()) {
     let currentTime = Date.now();
-    if (lastInstance == 0 && currentTime - lastTime < 50) return
+    if (lastInstance == 0 && currentTime - lastTime < appconfig.get("actionCooldown", 50)) return
     obs.send('SetSceneItemRender', {render: true, source: appconfig.get("targetItem")}).then(() => {
       addToLog(`Shown "${appconfig.get("targetItem")}"`);
       lastTime = Date.now()
@@ -315,7 +325,7 @@ let detectKeybindState = _.debounce(async function ({keycode, type}){
     })
   } else if (checkRemover()){
     let currentTime = Date.now();
-    if (lastInstance == 1 && currentTime - lastTime < 50 || lastInstance == 0 && currentTime - lastTime < 100) return
+    if (lastInstance == 1 && currentTime - lastTime < appconfig.get("actionCooldown", 50) || lastInstance == 0 && currentTime - lastTime < appconfig.get("actionCooldown", 50)) return
     obs.send('SetSceneItemRender', {render: false, source: appconfig.get("targetItem")}).then(() => {
       addToLog(`Hidden "${appconfig.get("targetItem")}"`);
       lastTime = Date.now()
@@ -324,7 +334,7 @@ let detectKeybindState = _.debounce(async function ({keycode, type}){
       addToLog(`⚠️ Error hiding "${appconfig.get("targetItem")}"`);
     })
   }
-})
+}
 
 function checkTrigger() {
   for (const keys of appconfig.get('triggerKeys')) {
