@@ -1,0 +1,6 @@
+appId: com.code-sloth.maplink
+productName: MapLink
+copyright: Copyright © 2022 ${author}
+win:
+  publish:
+    - github

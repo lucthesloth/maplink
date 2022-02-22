@@ -1,49 +1,51 @@
 {
   "name": "maplink",
   "productName": "MapLink",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Shows and hides a select item in the OBS source list.",
-  "main": "./src/app.js",
+  "license": "MIT",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish"
+    "postinstall": "electron-builder install-app-deps",
+    "lint": "eslint src",
+    "dev": "electron-webpack dev",
+    "compile": "electron-webpack",
+    "dist": "yarn compile && electron-builder --win --x64 --ia32",
+    "dist:32": "yarn compile && electron-builder --win --ia32",
+    "dist:64": "yarn compile && electron-builder --win --x64",
+    "publish": "yarn compile && electron-builder --win --x64 --ia32 --publish always",
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lucthesloth/maplink.git"
   },
-  "keywords": [],
-  "author": "Lucas C",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/lucthesloth/maplink/issues"
   },
   "homepage": "https://github.com/lucthesloth/maplink#readme",
   "dependencies": {
-    "@sweetalert2/theme-dark": "0.0.1",
-    "dotenv": "^16.0.0",
     "electron-log": "^4.4.6",
-    "electron-squirrel-startup": "^1.0.0",
+    "electron-updater": "^4.6.5",
     "iohook": "^0.9.3",
-    "lodash": "^4.17.21",
     "obs-websocket-js": "^4.0.3",
-    "sweetalert2": "^11.4.0",
-    "update-electron-app": "^2.0.1"
+    "source-map-support": "^0.5.16"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.63",
-    "@electron-forge/maker-deb": "^6.0.0-beta.63",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
-    "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "@electron-forge/plugin-auto-unpack-natives": "^6.0.0-beta.63",
-    "@electron-forge/publisher-github": "^6.0.0-beta.63",
-    "@types/electron": "^1.6.10",
-    "@types/vue": "^2.0.0",
+    "@types/electron-devtools-installer": "^2.2.1",
+    "@vue/devtools": "^6.0.12",
     "electron": "^12.0.0",
-    "typescript": "^4.5.5"
+    "electron-builder": "^22.4.1",
+    "electron-webpack": "^2.8.2",
+    "electron-webpack-ts": "^4.0.1",
+    "electron-webpack-vue": "^2.4.0",
+    "eslint-plugin-html": "^6.2.0",
+    "node-sass": "^7.0.1",
+    "sass-loader": "^12.6.0",
+    "typescript": "^4.5.5",
+    "vue": "^2.6.14",
+    "vue-devtools": "^5.1.4",
+    "vuetify": "^2.6.3",
+    "webpack": "~4.42.1"
   },
   "iohook": {
     "targets": [
@@ -60,7 +62,9 @@
       "ia32"
     ]
   },
-  "config": {
-    "forge": "./forge.config.js"
+  "electronWebpack": {
+    "whiteListedModules": [
+      "vuetify"
+    ]
   }
 }
