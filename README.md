@@ -2,7 +2,7 @@
 <br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B4ANQGE)
 
 ### Updates
-Currently the work on this project is stalled. I need to re-write the core components of it to fit <strong>SLOBS</strong> integration as well so I decided to rewrite everything properly using Typescripts and VUE templating instead (Should've done this from the start)
+Currently the work on this project is stalled. I need to re-write the core components of it to fit <strong>SLOBS</strong> integration as well so I decided to rewrite everything properly using Typescript and VUE templating instead (Should've done this from the start)
 <br>Without rewriting these parts of it I would be able to integrate slobs, yes, however for organization and ease of maintenance I will do it this way instead.
 ### YES I KNOW IT
 If you read through the code and see that I put in vuetify/vue/materialdesignicons through cdns instead of locally installing the packages and referencing them **I know it is like that and yes I will change it later on**.<br> I was way too burned out when writing the last parts of it that I couldn't bring myself to fix my issues with **Vuetify** by using it locally.
