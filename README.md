@@ -17,7 +17,7 @@ You will most likely get some warnings when trying to install/run the app. This 
 
 ## Before Usage
 
-- Install [obs-websocket](https://obsproject.com/forum/resources/obs-websocket-remote-control-obs-studio-from-websockets.466/)
+- Install [obs-websocket](https://github.com/obsproject/obs-websocket/releases) Any version that allows for <4.9 API compatibility.
 - Install [Microsoft Visual C++ Redistributable ](https://aka.ms/vs/17/release/vc_redist.x86.exe)
 ## Maintenance
 I will be actively maintaining this project to the best of my ability.
