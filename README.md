@@ -1,10 +1,12 @@
 # MapLink ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lucthesloth/maplinkv2/latest/total)
 <br>[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B4ANQGE)
 
-
+### Updates
+Currently the work on this project is stalled. I need to re-write the core components of it to fit <strong>SLOBS</strong> integration as well so I decided to rewrite everything properly using Typescript and VUE templating instead (Should've done this from the start)
+<br>Without rewriting these parts of it I would be able to integrate slobs, yes, however for organization and ease of maintenance I will do it this way instead.
 ### YES I KNOW IT
 If you read through the code and see that I put in vuetify/vue/materialdesignicons through cdns instead of locally installing the packages and referencing them **I know it is like that and yes I will change it later on**.<br> I was way too burned out when writing the last parts of it that I couldn't bring myself to fix my issues with **Vuetify** by using it locally.
-<br><img src="https://cdn.ko-fi.com/cdn/useruploads/png_76833faf-9dbc-432d-a2c0-5be567ceedbd.png" height="250px" width="auto" />
+<br><br><img src="https://cdn.ko-fi.com/cdn/useruploads/png_76833faf-9dbc-432d-a2c0-5be567ceedbd.png" height="250px" width="auto" />
 ## Installation
 
 Available through the [releases tab](https://github.com/lucthesloth/maplinkv2/releases)
@@ -15,7 +17,7 @@ You will most likely get some warnings when trying to install/run the app. This 
 
 ## Before Usage
 
-- Install [obs-websocket](https://obsproject.com/forum/resources/obs-websocket-remote-control-obs-studio-from-websockets.466/)
+- Install [obs-websocket](https://github.com/obsproject/obs-websocket/releases) Any version that allows for <4.9 API compatibility.
 - Install [Microsoft Visual C++ Redistributable ](https://aka.ms/vs/17/release/vc_redist.x86.exe)
 ## Maintenance
 I will be actively maintaining this project to the best of my ability.
